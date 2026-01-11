@@ -1,4 +1,4 @@
-package javaSDET.javaBasic;
+package javaBasic;
 
 public interface IWebDriver {
 }

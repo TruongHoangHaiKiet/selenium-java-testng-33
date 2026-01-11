@@ -1,4 +1,4 @@
-package javaSDET.javaBasic;
+package javaBasic;
 
 import org.openqa.selenium.By;
 import selenium.Topic_01_Environment;
