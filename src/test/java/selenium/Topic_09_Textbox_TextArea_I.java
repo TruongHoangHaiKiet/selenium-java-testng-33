@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 
 import java.util.Random;
 
-public class Topic_09_Textbox_TextArea {
+public class Topic_09_Textbox_TextArea_I {
     WebDriver driver;
     String firstName, lastName, emailAddress, password, fullname, reviewProduct;
 
