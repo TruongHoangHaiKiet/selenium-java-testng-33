@@ -6,6 +6,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.time.Duration;
+
 public class Topic_02_Template {
     WebDriver driver;
     @BeforeClass
@@ -15,7 +17,8 @@ public class Topic_02_Template {
         // Init class/ init data test
         // Open DB/...
         driver = new FirefoxDriver();
-        driver.get("https://www.facebook.com/");
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
 
     }
 
