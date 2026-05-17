@@ -150,9 +150,6 @@ public class Topic_16_Action {
         Thread.sleep(2000);
         Assert.assertEquals(driver.findElement(By.cssSelector("div#column-a>header")).getText(),"A");
         Assert.assertEquals(driver.findElement(By.cssSelector("div#column-b>header")).getText(),"B");
-
-
-
     }
 
     public String getContentFile(String filePath) throws IOException, FileNotFoundException {
