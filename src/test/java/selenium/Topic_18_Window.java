@@ -6,7 +6,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -48,7 +50,7 @@ public class Topic_18_Window {
 
         driver.findElement(By.cssSelector("input[name='email']")).sendKeys("automationfc.com@gmail");
         driver.findElement(By.cssSelector("input[name='pass']")).sendKeys("automationfc.com@gmail");
-
+        closeAllWindow(githubID);
     }
 
     @Test
@@ -67,9 +69,51 @@ public class Topic_18_Window {
         switchToWindowByTitle("Mobile");
         driver.findElement(By.cssSelector("input#search")).sendKeys("Samsung Galaxy");
     }
+
+    @Test
+    public void TC_03_Harvard() throws InterruptedException {
+        driver.get("https://courses.dce.harvard.edu/");
+        String courseWindowID = driver.getWindowHandle();
+        driver.findElement(By.cssSelector("a[data-action='login']")).click();
+        Thread.sleep(2000);
+        switchToWindowByID(courseWindowID);
+        Assert.assertEquals(driver.findElement(By.cssSelector("header>h1")).getText(),"DCE Login Portal");
+        closeAllWindow(courseWindowID);
+        Thread.sleep(2000);
+
+        Assert.assertEquals(driver.findElement(By.cssSelector("p.sam-wait__message")).getText(),"Authentication was not successful. Please try again.");
+        driver.findElement(By.cssSelector("button.sam-wait__close")).click();
+
+        String courseName = "Human Evolution";
+        driver.findElement(By.cssSelector("input#crit-keyword")).sendKeys(courseName);
+        new Select(driver.findElement(By.cssSelector("select#crit-srcdb"))).selectByVisibleText("Harvard Summer School 2026");
+        new Select(driver.findElement(By.cssSelector("select#crit-summer_school"))).selectByVisibleText("Harvard College");
+        new Select(driver.findElement(By.cssSelector("select#crit-session"))).selectByVisibleText("Any Part of Term");
+        Thread.sleep(2000);
+        driver.findElement(By.cssSelector("button#search-button")).click();
+
+        Assert.assertEquals(driver.findElement(By.xpath("//span[text()='Human Evolution']")).getText(),"Human Evolution");
+    }
+
+    @Test
+    public void TC_04_Selenium_4x() throws InterruptedException {
+        driver.get("https://live.techpanda.org/");
+        driver.switchTo().newWindow(WindowType.TAB).get("https://admin-demo.nopcommerce.com/login");
+        driver.findElement(By.cssSelector("input#Email")).clear();
+        driver.findElement(By.cssSelector("input#Email")).sendKeys("admin@yourstore.com");
+        driver.findElement(By.cssSelector("input#Password")).clear();
+        driver.findElement(By.cssSelector("input#Password")).sendKeys("admin");
+        driver.findElement(By.cssSelector("button.login-button")).click();
+        switchToWindowByTitle("Home page");
+        driver.findElement(By.xpath("//a[text()='Mobile']")).click();
+        driver.findElement(By.xpath("//a[text()='Samsung Galaxy']/parent::h2/following-sibling::div[@class='actions']//a[text()='Add to Compare']")).click();
+        driver.findElement(By.xpath("//a[text()='IPhone']/parent::h2/following-sibling::div[@class='actions']//a[text()='Add to Compare']")).click();
+        driver.findElement(By.xpath("//a[text()='Sony Xperia']/parent::h2/following-sibling::div[@class='actions']//a[text()='Add to Compare']")).click();
+    }
+
     // Chỉ ap dung voi 2 Window/ Tab
     private void switchToWindowByID(String windowID) {
-        // Lay ra tat ca window 10
+        // Lay ra tat ca window tab
         Set<String> allIDs = driver.getWindowHandles();
         for (String id: allIDs){
             if (!id.equals(windowID)){
@@ -100,11 +144,6 @@ public class Topic_18_Window {
             }
         }
         driver.switchTo().window(windowID);
-    }
-
-    @Test
-    public void TC_02_() {
-
     }
 
     @AfterClass
