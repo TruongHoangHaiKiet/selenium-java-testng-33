@@ -106,7 +106,6 @@ public class Topic_05_Browser_Command {
         // Lấy ra 1 loại bất kỳ
         driver.manage().logs().get(LogType.DRIVER);
         driver.manage().logs().get(LogType.BROWSER);
-        driver.manage().logs().get(LogType.CLIENT);
 
         // ================ Cookies ============= ==
         // Lấy ra tất cả các loại Cookie
