@@ -11,9 +11,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
+import java.util.List;
 
 public class Topic_19_Popup {
     WebDriver driver;
+    long shortTime = 5;
+    long longTime = 10;
     @BeforeClass
     public void initBrowser(){
         //Arrange: Pre-Condition
@@ -77,6 +80,64 @@ public class Topic_19_Popup {
             Thread.sleep(3000);
             System.out.println("Close popup");
         }
+    }
+
+    @Test
+    public void TC_04_TIKI_NotInDOM() throws InterruptedException {
+        driver.get("https://tiki.vn/");
+        Thread.sleep(5000);
+
+        // Step 01
+        List<WebElement> popupContainer = driver.findElements(By.cssSelector("div#VIP_BUNDLE"));
+        // Case 1: POPUP có xuất hiện thì cần close đi và qua step tiếp theo
+        if (popupContainer.size() > 0 && popupContainer.getFirst().isDisplayed()){
+            driver.findElement(By.cssSelector("div#VIP_BUNDLE img[alt='close-icon']")).click();
+            Thread.sleep(3000);
+            System.out.println("Popup is displayed and closed !!!");
+        } else {
+            // Case 2: POPUP không xuất hiện thì qua step tiếp theo
+            System.out.println("Popup is not displayed !!!");
+        }
+        // STEP 02
+        driver.findElement(By.cssSelector("div[data-view-id='header_header_account_container']")).click();
+
+        WebElement loginPopup = driver.findElement(By.cssSelector("div.ReactModal__Content"));
+        Assert.assertTrue(loginPopup.isDisplayed());
+        driver.findElement(By.cssSelector("p.login-with-email")).click();
+        driver.findElement(By.xpath("//button[text() = 'Đăng nhập']")).click();
+        driver.findElement(By.xpath("//span[@class='error-mess' and text() = 'Email không được để trống']")).isDisplayed();
+        driver.findElement(By.xpath("//span[@class='error-mess' and text() = 'Mật khẩu không được để trống']")).isDisplayed();
+        driver.findElement(By.cssSelector("button.btn-close")).click();
+        Thread.sleep(3000);
+        Assert.assertEquals(driver.findElements(By.cssSelector("div.ReactModal__Content")).size(),0);
+    }
+
+    @Test
+    public void TC_05_NgoaiNgu24h_NotInDOM() throws InterruptedException {
+        driver.get("https://ngoaingu24h.vn/");
+        driver.findElement(By.xpath("//button[text()='Đăng nhập']")).click();
+        Thread.sleep(2000);
+        List<WebElement> loginPopup = driver.findElements(By.cssSelector("div.MuiDialog-container>div"));
+        Assert.assertTrue(driver.findElement(By.cssSelector("div.MuiDialog-container>div")).isDisplayed());
+        Assert.assertTrue(loginPopup.size() > 0 && loginPopup.getFirst().isDisplayed());
+
+        driver.findElement(By.cssSelector("div.input-item input[autocomplete='username']")).sendKeys("automationtesting@gmail.com");
+        driver.findElement(By.cssSelector("div.input-item input[autocomplete='new-password']")).sendKeys("Pass111@@@@");
+        driver.findElement(By.xpath("//div[contains(@class,'MuiDialog-container')]//button[text()='Đăng nhập']")).click();
+        Thread.sleep(2000);
+        driver.findElement(By.cssSelector("div.SnackbarContainer-root")).isDisplayed();
+        driver.findElement(By.cssSelector("div.MuiPaper-root button.close-btn")).click();
+        Thread.sleep(2000);
+
+        setImplicitTimeout(shortTime);
+        loginPopup = driver.findElements(By.cssSelector("div.MuiDialog-container>div"));
+        setImplicitTimeout(longTime);
+        Assert.assertTrue(loginPopup.size() == 0 && loginPopup.isEmpty());
+
+    }
+
+    public void setImplicitTimeout(long seconds) {
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(seconds));
     }
 
     @AfterClass
