@@ -50,12 +50,15 @@ public class Topic_20_Shadow_DOM {
     }
 
     @Test
-    public void TC_03_Saleforce(){
+    public void TC_03_Saleforce() throws InterruptedException {
         driver.get("https://developer.salesforce.com/free-trials");
-        SearchContext shadowRootFirst = driver.findElement(By.cssSelector("dx-skip-nav-link")).getShadowRoot();
+        Thread.sleep(5000);
+        WebElement shadowHostFirst = driver.findElement(By.cssSelector("dx-global-header"));
+        SearchContext shadowRootFirst = shadowHostFirst.getShadowRoot();
         SearchContext shadowRootSecond = shadowRootFirst.findElement(By.cssSelector("hgf-c360nav")).getShadowRoot();
-        SearchContext shadowRootThird = shadowRootSecond.findElement(By.cssSelector("hgf-button")).getShadowRoot();
-        shadowRootThird.findElement(By.cssSelector("button.hgf-button")).click();
+        SearchContext shadowRootThird = shadowRootSecond.findElement(By.cssSelector("div.desktop-cta>hgf-button")).getShadowRoot();
+        shadowRootThird.findElement(By.cssSelector("a.hgf-button")).click();
+        Thread.sleep(3000);
     }
 
     @AfterClass
