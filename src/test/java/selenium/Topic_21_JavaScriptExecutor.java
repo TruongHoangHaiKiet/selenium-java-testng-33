@@ -11,6 +11,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
+import java.util.Random;
 
 public class Topic_21_JavaScriptExecutor {
     WebDriver driver;
@@ -30,21 +31,81 @@ public class Topic_21_JavaScriptExecutor {
     }
 
     @Test
-    public void TC_03_Fahasa() {
-        driver.get("https://www.fahasa.com/");
-//        String fahasaDomain = (String) jsExecutor.executeScript("return document.domain");
-        String fahasaTitle = (String) jsExecutor.executeScript("return document.title");
-        String fahasaDomain = (String) executeForBrowser("return document.domain");
+    public void TC_01_Techpanda() {
+        navigateToUrlByJS("https://live.techpanda.org/");
+        Assert.assertEquals(getDomainName(),"live.techpanda.org");
+        Assert.assertEquals(executeForBrowser("return document.URL"),"https://live.techpanda.org/");
+
+        hightlightElement("//a[text()='Mobile']");
+        clickToElementByJS("//a[text()='Mobile']");
+
+        hightlightElement("//a[text()='Samsung Galaxy']/parent::h2[@class='product-name']/following-sibling::div[@class='actions']/button");
+        clickToElementByJS("//a[text()='Samsung Galaxy']/parent::h2[@class='product-name']/following-sibling::div[@class='actions']/button");
+
+        String samsungText = getInnerText();
+        //1
+        Assert.assertTrue(samsungText.contains("Samsung Galaxy was added to your shopping cart."));
+        Assert.assertTrue(isExpectedTextInInnerText("Samsung Galaxy was added to your shopping cart."));
+        Assert.assertEquals(getElementTextByJS("//li[@class='success-msg']//span"),"Samsung Galaxy was added to your shopping cart.");
+
+        hightlightElement("//a[text()='Customer Service']");
+        clickToElementByJS("//a[text()='Customer Service']");
+
+        scrollToElementOnTop("//input[@id='newsletter']");
+        hightlightElement("//input[@id='newsletter']");
+        sendkeyToElementByJS("//input[@id='newsletter']", "claude" + new Random().nextInt(9999) + "@gmail.com");
+
+        hightlightElement("//button[@title='Subscribe']");
+        clickToElementByJS("//button[@title='Subscribe']");
+        driver.switchTo().alert().accept();
+
+        Assert.assertEquals(getElementTextByJS("//li[@class='success-msg']//span"), "Thank you for your subscription.");
+        navigateToUrlByJS("https://www.facebook.com/");
+        Assert.assertEquals(getDomainName(),"www.facebook.com");
     }
 
     @Test
-    public void TC_02_() {
+    public void TC_02_Ubuntu_Validation_Msg() {
+        navigateToUrlByJS("https://login.ubuntu.com/");
+        driver.findElement(By.xpath("//span[text()='Log in']")).click();
+        String htmlValidationMsg = getElementValidationMessage("//form[@id='login-form']//input[@id='id_email']");
+        Assert.assertEquals(htmlValidationMsg,"Please fill out this field.");
 
+        driver.findElement(By.xpath("//form[@id='login-form']//input[@id='id_email']")).sendKeys("a");
+        driver.findElement(By.xpath("//span[text()='Log in']")).click();
+
+        htmlValidationMsg = getElementValidationMessage("//form[@id='login-form']//input[@id='id_email']");
+        Assert.assertEquals(htmlValidationMsg, "Please enter an email address.");
+        Assert.assertEquals(driver.findElement(By.xpath("//form[@id='login-form']//input[@id='id_email']")).getDomProperty("validationMessage"),"Please fill out this field.");
+
+        driver.findElement(By.xpath("//form[@id='login-form']//input[@id='id_email']")).sendKeys("ab@c.com");
+        driver.findElement(By.xpath("//span[text()='Log in']")).click();
+
+        htmlValidationMsg = getElementValidationMessage("//form[@id='login-form']//input[@id='id_password']");
+        Assert.assertEquals(htmlValidationMsg, "Please fill out this field.");
+        Assert.assertEquals(driver.findElement(By.xpath("//form[@id='login-form']//input[@id='id_password']")).getDomProperty("validationMessage"),"Please fill out this field.");
+
+        driver.findElement(By.xpath("//form[@id='login-form']//input[@id='id_password']")).sendKeys("abc@test");
+        driver.findElement(By.xpath("//span[text()='Log in']")).click();
+    }
+
+    @Test
+    public void TC_03_Scroll() {
+        driver.get("https://live.techpanda.org/index.php/customer-service/");
+        scrollToElementOnTop("//input[@id='search']");
+        sleepInSecond(3);
+
+        scrollToElementOnDown("//input[@id='newsletter']");
+        sleepInSecond(3);
+
+        driver.get("https://www.fahasa.com/");
+        scrollToElementOnTop("//div[contains(text(),'TỦ SÁCH NỔI BẬT')]");
+        sleepInSecond(3);
     }
 
     @AfterClass
     public void closeBrowser(){
-//        driver.quit();
+        driver.quit();
     }
 
     public Object executeForBrowser(String javaScript) {
@@ -53,6 +114,9 @@ public class Topic_21_JavaScriptExecutor {
 
     public String getInnerText() {
         return (String) jsExecutor.executeScript("return document.documentElement.innerText;");
+    }
+    public String getDomainName() {
+        return (String) jsExecutor.executeScript("return document.domain;");
     }
 
     public boolean isExpectedTextInInnerText(String textExpected) {
