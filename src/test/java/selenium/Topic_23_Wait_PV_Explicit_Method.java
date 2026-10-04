@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 
 import java.time.Duration;
 
-public class Topic_23_Wait_PV_Explicit {
+public class Topic_23_Wait_PV_Explicit_Method {
     // Khai báo
     WebDriver driver;
     WebDriverWait explicitWait;
