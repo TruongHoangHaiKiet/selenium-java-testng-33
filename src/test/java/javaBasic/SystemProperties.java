@@ -1,11 +1,6 @@
 package javaBasic;
 
-import org.openqa.selenium.By;
-import selenium.Topic_01_Environment;
-
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SystemProperties {
     public static void main(String[] args) {
