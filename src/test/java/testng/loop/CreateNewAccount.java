@@ -8,13 +8,16 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import testng.listener.TakeScreenShotListener;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Random;
+
 
 public class CreateNewAccount {
     WebDriver driver;
@@ -58,7 +61,7 @@ public class CreateNewAccount {
         driver.findElement(By.cssSelector("button[title='Register']")).click();
 
         Assert.assertEquals(driver.findElement(By.cssSelector("li.success-msg span")).getText(),
-                "Thank you for registering with Main Website Store.");
+                "Thank you for registering with Main Website Store....");
 
         driver.findElement(By.xpath("//h3[text()='Contact Information']/following-sibling::a")).click();
 
@@ -78,5 +81,9 @@ public class CreateNewAccount {
     public void afterClass() throws IOException {
         outputStrem.flush();
         driver.quit();
+    }
+
+    public WebDriver getDriver(){
+        return driver;
     }
 }
